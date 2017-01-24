@@ -1,9 +1,9 @@
-package com.rmpi.thumber.instruction;
+package com.rmpi.thumber.instruction.thumb;
 
 import com.rmpi.thumber.format.Width;
 
-public class BL extends Instruction {
-    public int offset;
+public class BL extends ThumbInstruction {
+    public int offset = 0;
 
     @Override
     public void assemble() {
@@ -23,10 +23,10 @@ public class BL extends Instruction {
 
     @Override
     public void disassemble() {
-        int sign = (bits & 0x08000000) >>> 26;
+        int sign = (bits & 0x04000000) >>> 26;
         offset = ((-sign & 0xFF) << 24
-                | (notBit((bits & 0x04000000) ^ sign) >>> 13) << 23
-                | (notBit((bits & 0x02000000) ^ sign) >>> 11) << 22
+                | notBit(((bits & 0x00002000) >>> 13) ^ sign) << 23
+                | notBit(((bits & 0x00000800) >>> 11) ^ sign) << 22
                 | ((bits & 0x03FF0000) >>> 16) << 12
                 | (bits & 0x000007FF) << 1) + 4;
     }
