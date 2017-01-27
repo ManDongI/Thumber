@@ -29,8 +29,8 @@ public class MOVS_Reg extends ThumbInstruction {
     @Override
     public boolean isValid() {
         return super.isValid()
-                | target < 0x8
-                | register < 0x8;
+                && target < 0x8
+                && register < 0x8;
     }
 
     @Override
