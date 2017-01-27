@@ -30,6 +30,5 @@ public class Test {
         bxlr.setBits(0x7047, Endianness.LITTLE);
         bxlr.disassemble();
         System.out.println(bxlr.register);
-        //
     }
 }

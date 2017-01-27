@@ -1,5 +1,6 @@
 package com.rmpi.thumber.instruction.thumb;
 
+import com.rmpi.thumber.format.BitFilter;
 import com.rmpi.thumber.format.Width;
 
 public class BL extends ThumbInstruction {
@@ -9,7 +10,7 @@ public class BL extends ThumbInstruction {
     public void assemble() {
         int _offset = offset - 4; // PC padding
         int sign = _offset < 0 ? 1 : 0;
-        bits = 0xF000D000
+        bits = getBitFilter().toInteger()
                 | sign << 26
                 | (notBit((_offset & 0x00800000) >>> 23) ^ sign) << 13
                 | (notBit((_offset & 0x00400000) >>> 22) ^ sign) << 11
@@ -29,6 +30,24 @@ public class BL extends ThumbInstruction {
                 | notBit(((bits & 0x00000800) >>> 11) ^ sign) << 22
                 | ((bits & 0x03FF0000) >>> 16) << 12
                 | (bits & 0x000007FF) << 1) + 4;
+    }
+
+    @Override
+    public BitFilter getBitFilter() {
+        return new BitFilter("11110XXXXXXXXXXX11X1XXXXXXXXXXXX");
+    }
+
+
+    @Override
+    public boolean isValid() {
+        return super.isValid()
+                && ((offset & 0xFF000000) >> 24 == 0xFF
+                || (offset & 0xFF000000) >> 24 == 0x00);
+    }
+
+    @Override
+    public boolean isUnpredictable(boolean isInITBlock, boolean isLastInITBlock) {
+        return isInITBlock && !isLastInITBlock;
     }
 
     @Override
